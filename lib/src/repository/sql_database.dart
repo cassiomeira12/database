@@ -52,6 +52,11 @@ class SQLDatabase implements SGBDInterface, DatabaseInterface {
   }
 
   @override
+  Future<void> close() {
+    return _database.close();
+  }
+
+  @override
   Future<void> createDatabase(database) async {
     try {
       for (var table in tables) {
@@ -200,20 +205,38 @@ class SQLDatabase implements SGBDInterface, DatabaseInterface {
         }
         return data;
       } else {
-        int? id = data['id'];
-        data.remove('id');
-        await _database.update(
-          table,
-          data,
-          where: 'id = ?',
-          whereArgs: [id],
-          conflictAlgorithm: ConflictAlgorithm.replace,
+        final id = data['id'];
+        var temp = await getByColumn(
+          table: table,
+          column: 'id',
+          value: id,
         );
-        data['id'] = id;
-        if (data.containsKey('synced')) {
-          data['synced'] = data['synced'] == 'true';
+        if (temp == null) {
+          int id = await _database.insert(
+            table,
+            data,
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+          data['id'] = id;
+          if (data.containsKey('synced')) {
+            data['synced'] = data['synced'] == 'true';
+          }
+          return data;
+        } else {
+          data.remove('id');
+          await _database.update(
+            table,
+            data,
+            where: 'id = ?',
+            whereArgs: [id],
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+          data['id'] = id;
+          if (data.containsKey('synced')) {
+            data['synced'] = data['synced'] == 'true';
+          }
+          return data;
         }
-        return data;
       }
     } catch (error) {
       debugPrint("Error createOrUpdate - $table - $error");
@@ -293,7 +316,7 @@ class SQLDatabase implements SGBDInterface, DatabaseInterface {
     }
     try {
       Map<String, dynamic> map = data;
-      int? id = data['id'];
+      final id = data['id'];
       data.remove('id');
       await _database.transaction((txn) {
         return txn.update(

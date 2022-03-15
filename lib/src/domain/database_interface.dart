@@ -1,5 +1,6 @@
 abstract class DatabaseInterface {
   Future<void> init();
+  Future<void> close();
 
   Future<Map<String, dynamic>> createOrUpdate({
     required String table,

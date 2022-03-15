@@ -41,6 +41,11 @@ class DatabaseController implements DatabaseInterface {
   }
 
   @override
+  Future<void> close() {
+    return _db.close();
+  }
+
+  @override
   Future<Map<String, dynamic>> createOrUpdate({
     required String table,
     required Map<String, dynamic> data,
