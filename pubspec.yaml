@@ -1,10 +1,10 @@
 name: database
 description: A new Flutter package project.
-version: 1.1.0
+version: 1.2.0
 homepage:
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -12,8 +12,8 @@ dependencies:
     sdk: flutter
 
   path: 1.8.1
-  path_provider: 2.0.10
-  sqflite: 2.0.2+1
+  path_provider: 2.0.11
+  sqflite: 2.0.3+1
 
 dev_dependencies:
   flutter_test:

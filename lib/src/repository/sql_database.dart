@@ -125,8 +125,8 @@ class SQLDatabase implements SGBDInterface, DatabaseInterface {
     List<ColumnTable> columns,
   ) async {
     try {
-      final _list = await database.rawQuery('PRAGMA table_info($table)');
-      if (_list.isEmpty) {
+      final list = await database.rawQuery('PRAGMA table_info($table)');
+      if (list.isEmpty) {
         String columnsString = columns
             .map((column) {
               return column.toString();
@@ -172,9 +172,9 @@ class SQLDatabase implements SGBDInterface, DatabaseInterface {
   @override
   Future<void> deleteAllTables() async {
     try {
-      for (var column in tables) {
-        await _database.rawQuery('DROP TABLE ${column['name']}');
-        debugPrint('DROPPED TABLE ${column['name']}');
+      for (var table in tables) {
+        await _database.rawQuery('DROP TABLE ${table['name']}');
+        debugPrint('DROPPED TABLE ${table['name']}');
       }
     } catch (error) {
       debugPrint(error.toString());
